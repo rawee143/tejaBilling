@@ -1,3 +1,6 @@
-*.pdf
-*.class
-*.xml
+BillingSoftware.iml
+build/
+report/
+build.xml
+out.pdf
+pom.xml
