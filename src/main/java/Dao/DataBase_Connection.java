@@ -21,7 +21,7 @@ public class DataBase_Connection {
 
     protected String dbUserName ="root";
     protected String dbPassWord = "";
-    protected String dbUrl ="jdbc:mysql://localhost:3306/draviTejaComm";
+    protected String dbUrl ="jdbc:mysql://localhost:3307/draviTejaComm";
     protected String dbDriver ="com.mysql.jdbc.Driver";
     protected static String configFileName;
     protected Statement smtInstance;
@@ -83,7 +83,7 @@ public class DataBase_Connection {
     public Connection getConnection() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            connectionInstance = DriverManager.getConnection("jdbc:mysql://localhost:3306/draviTejaComm", "root", "");
+            connectionInstance = DriverManager.getConnection("jdbc:mysql://localhost:3307/draviTejaComm", "root", "");
             return connectionInstance;
             
         } catch (ClassNotFoundException ex) {

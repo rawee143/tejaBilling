@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
-  <NonVisualComponents>
-    <Component class="datechooser.beans.DateChooserCombo" name="dateChooserCombo1">
-    </Component>
-  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="resizable" type="boolean" value="false"/>
@@ -193,9 +189,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Century Schoolbook L" size="14" style="1"/>
                     </Property>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" id="black" palette="1" red="0" type="palette"/>
-                    </Property>
                     <Property name="text" type="java.lang.String" value="Password        :"/>
                   </Properties>
                 </Component>
@@ -225,9 +218,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Century Schoolbook L" size="14" style="1"/>
                     </Property>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" id="black" palette="1" red="0" type="palette"/>
-                    </Property>
                     <Property name="text" type="java.lang.String" value="Click Here --&gt;"/>
                   </Properties>
                 </Component>
@@ -249,9 +239,6 @@
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Century Schoolbook L" size="14" style="1"/>
-                    </Property>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" id="black" palette="1" red="0" type="palette"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Username      :"/>
                   </Properties>

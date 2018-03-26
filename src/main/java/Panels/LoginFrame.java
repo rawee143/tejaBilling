@@ -5,11 +5,8 @@
  */
 package main.java.Panels;
 
-import main.java.Dao.DataBase_Connection;
-import main.java.PanelForms.Test.Encryption;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-//import Pojo.Login_pojo;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
@@ -25,6 +22,8 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import main.java.Dao.DataBase_Connection;
+import main.java.PanelForms.Test.Encryption;
 
 /**
  *
@@ -142,7 +141,6 @@ public class LoginFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        dateChooserCombo1 = new datechooser.beans.DateChooserCombo();
         jPanel1 = new javax.swing.JPanel();
         introPanel = new javax.swing.JPanel();
         logInPanel = new javax.swing.JPanel();
@@ -176,7 +174,6 @@ public class LoginFrame extends javax.swing.JFrame {
         logInPanel.setBorder(null);
 
         jLabel3.setFont(new java.awt.Font("Century Schoolbook L", 1, 14)); // NOI18N
-        jLabel3.setForeground(java.awt.Color.black);
         jLabel3.setText("Password        :");
 
         Submit_btn.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
@@ -200,7 +197,6 @@ public class LoginFrame extends javax.swing.JFrame {
         });
 
         jLabel4.setFont(new java.awt.Font("Century Schoolbook L", 1, 14)); // NOI18N
-        jLabel4.setForeground(java.awt.Color.black);
         jLabel4.setText("Click Here -->");
 
         forgotPassword.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
@@ -213,7 +209,6 @@ public class LoginFrame extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Century Schoolbook L", 1, 14)); // NOI18N
-        jLabel2.setForeground(java.awt.Color.black);
         jLabel2.setText("Username      :");
 
         javax.swing.GroupLayout logInPanelLayout = new javax.swing.GroupLayout(logInPanel);
@@ -476,7 +471,6 @@ public class LoginFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Submit_btn;
     private javax.swing.JPanel TitlePanel;
-    private datechooser.beans.DateChooserCombo dateChooserCombo1;
     private javax.swing.JLabel forgotPassword;
     private javax.swing.JPanel introPanel;
     private javax.swing.JLabel jLabel2;
