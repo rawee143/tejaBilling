@@ -5,8 +5,6 @@
  */
 package main.java.Panels;
 
-import main.java.Dao.DataBase_Connection;
-import main.java.PanelForms.Test.MyIntFilter;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,6 +19,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.AbstractDocument;
+import main.java.Dao.DataBase_Connection;
+import main.java.PanelForms.Test.MyIntFilter;
 import pojos.quotation_pojo;
 
 /**
@@ -281,10 +281,11 @@ public class QuotationPanel extends javax.swing.JPanel {
 
         setBackground(java.awt.Color.gray);
 
-        jPanel1.setBackground(java.awt.Color.lightGray);
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel1.setBackground(new java.awt.Color(254, 58, 79));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder(0));
 
         jLabel2.setFont(new java.awt.Font("Century Schoolbook L", 1, 24)); // NOI18N
+        jLabel2.setForeground(java.awt.Color.white);
         jLabel2.setText("Quotation");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -306,6 +307,7 @@ public class QuotationPanel extends javax.swing.JPanel {
 
         jPanel2.setBackground(java.awt.Color.lightGray);
 
+        jLabel1.setBackground(java.awt.Color.lightGray);
         jLabel1.setFont(new java.awt.Font("Century Schoolbook L", 1, 12)); // NOI18N
         jLabel1.setText("Customer Name :");
 
@@ -487,7 +489,7 @@ public class QuotationPanel extends javax.swing.JPanel {
                                 .addComponent(txtReq, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(29, 29, 29)
                                 .addComponent(jLabel11)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtRate)
                             .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))))
@@ -629,7 +631,7 @@ public class QuotationPanel extends javax.swing.JPanel {
                 .addComponent(billBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -657,7 +659,7 @@ public class QuotationPanel extends javax.swing.JPanel {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
