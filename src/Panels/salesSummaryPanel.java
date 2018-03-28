@@ -51,8 +51,8 @@ public class salesSummaryPanel extends javax.swing.JPanel {
         protected String queryUsingSelection,queryOpen, queryClose;
         protected String excelFilePath = null;
         DataBase_Connection dao;
-        DefaultTableModel model, model1;
-        private JTextField filename = new JTextField(), dir = new JTextField();
+        DefaultTableModel salesTableModel;
+        private final JTextField filename = new JTextField(), dir = new JTextField();
        
 
     /**
@@ -95,10 +95,10 @@ public class salesSummaryPanel extends javax.swing.JPanel {
     private void remove(){
         
         if(!isEmpty1(salesTable)){
-            int rowCount = model.getRowCount();
+            int rowCount = salesTableModel.getRowCount();
     //Remove rows one by one from the end of the table
     for (int i = rowCount - 1; i >= 0; i--) {
-    model.removeRow(i);
+    salesTableModel.removeRow(i);
         }
         }
      }
@@ -117,7 +117,7 @@ public class salesSummaryPanel extends javax.swing.JPanel {
     }
     
     private void fillTable(){
-         model= (DefaultTableModel)salesTable.getModel();
+         salesTableModel= (DefaultTableModel)salesTable.getModel();
         try
         {
             java.sql.Date dFrom = new java.sql.Date(dateFrom.getDate().getTime());
@@ -190,7 +190,7 @@ public class salesSummaryPanel extends javax.swing.JPanel {
                         Double amt = (Double.parseDouble(total));
                         String amount = Double.toString(amt);
 
-                        model.insertRow(j,new Object[]{todayDate,billId,NAME,amount});
+                        salesTableModel.insertRow(j,new Object[]{todayDate,billId,NAME,amount});
                         j++;
                     }
                 }
@@ -436,8 +436,8 @@ public class salesSummaryPanel extends javax.swing.JPanel {
     private void salesTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_salesTableMouseClicked
             try {
                 int index = salesTable.getSelectedRow();
-                model  =(DefaultTableModel)salesTable.getModel();
-                String billId = model.getValueAt(index, 1).toString();
+                salesTableModel  =(DefaultTableModel)salesTable.getModel();
+                String billId = salesTableModel.getValueAt(index, 1).toString();
                 
                 String sql= "SELECT\n" +
                         "     productBills.BillNo AS productBills_BillNo,\n" +

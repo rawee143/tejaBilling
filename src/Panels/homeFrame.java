@@ -123,17 +123,17 @@ public class homeFrame extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         lblUser = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        HomeMenu = new javax.swing.JMenu();
         Home = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        InvoiceMenu = new javax.swing.JMenu();
         Billing = new javax.swing.JMenuItem();
         Quotation = new javax.swing.JMenuItem();
-        stock = new javax.swing.JMenu();
+        StockMenu = new javax.swing.JMenu();
         stockIn = new javax.swing.JMenuItem();
         stockManagement = new javax.swing.JMenuItem();
-        dueBills = new javax.swing.JMenu();
+        SalesMenu = new javax.swing.JMenu();
         reportSummary = new javax.swing.JMenuItem();
-        jMenu7 = new javax.swing.JMenu();
+        ExitMenu = new javax.swing.JMenu();
         LogOff = new javax.swing.JMenuItem();
 
         jTextField1.setText("jTextField1");
@@ -201,18 +201,18 @@ public class homeFrame extends javax.swing.JFrame {
         jMenuBar1.setBackground(java.awt.Color.lightGray);
         jMenuBar1.setMargin(new java.awt.Insets(0, 10, 0, 0));
 
-        jMenu1.setBackground(java.awt.Color.white);
-        jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/home.png"))); // NOI18N
-        jMenu1.setText("HOME");
-        jMenu1.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
-        jMenu1.addFocusListener(new java.awt.event.FocusAdapter() {
+        HomeMenu.setBackground(java.awt.Color.white);
+        HomeMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/home.png"))); // NOI18N
+        HomeMenu.setText("HOME");
+        HomeMenu.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
+        HomeMenu.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                jMenu1FocusGained(evt);
+                HomeMenuFocusGained(evt);
             }
         });
-        jMenu1.addActionListener(new java.awt.event.ActionListener() {
+        HomeMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenu1ActionPerformed(evt);
+                HomeMenuActionPerformed(evt);
             }
         });
 
@@ -224,13 +224,13 @@ public class homeFrame extends javax.swing.JFrame {
                 HomeActionPerformed(evt);
             }
         });
-        jMenu1.add(Home);
+        HomeMenu.add(Home);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(HomeMenu);
 
-        jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/invoice.png"))); // NOI18N
-        jMenu2.setText("INVOICE");
-        jMenu2.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
+        InvoiceMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/invoice.png"))); // NOI18N
+        InvoiceMenu.setText("INVOICE");
+        InvoiceMenu.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
 
         Billing.setFont(new java.awt.Font("Century Schoolbook L", 1, 16)); // NOI18N
         Billing.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/slot-machine.png"))); // NOI18N
@@ -240,7 +240,7 @@ public class homeFrame extends javax.swing.JFrame {
                 BillingActionPerformed(evt);
             }
         });
-        jMenu2.add(Billing);
+        InvoiceMenu.add(Billing);
 
         Quotation.setFont(new java.awt.Font("Century Schoolbook L", 1, 16)); // NOI18N
         Quotation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/1488294545_Artboard_1.png"))); // NOI18N
@@ -250,14 +250,14 @@ public class homeFrame extends javax.swing.JFrame {
                 QuotationActionPerformed(evt);
             }
         });
-        jMenu2.add(Quotation);
+        InvoiceMenu.add(Quotation);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(InvoiceMenu);
 
-        stock.setBackground(java.awt.Color.white);
-        stock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/warehouse.png"))); // NOI18N
-        stock.setText("STOCK");
-        stock.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
+        StockMenu.setBackground(java.awt.Color.white);
+        StockMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/warehouse.png"))); // NOI18N
+        StockMenu.setText("STOCK");
+        StockMenu.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
 
         stockIn.setFont(new java.awt.Font("Century Schoolbook L", 1, 16)); // NOI18N
         stockIn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/stock.png"))); // NOI18N
@@ -267,7 +267,7 @@ public class homeFrame extends javax.swing.JFrame {
                 stockInActionPerformed(evt);
             }
         });
-        stock.add(stockIn);
+        StockMenu.add(stockIn);
 
         stockManagement.setFont(new java.awt.Font("Century Schoolbook L", 1, 16)); // NOI18N
         stockManagement.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/office-material.png"))); // NOI18N
@@ -277,14 +277,14 @@ public class homeFrame extends javax.swing.JFrame {
                 stockManagementActionPerformed(evt);
             }
         });
-        stock.add(stockManagement);
+        StockMenu.add(stockManagement);
 
-        jMenuBar1.add(stock);
+        jMenuBar1.add(StockMenu);
 
-        dueBills.setBackground(java.awt.Color.white);
-        dueBills.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/sale.png"))); // NOI18N
-        dueBills.setText("SALES");
-        dueBills.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
+        SalesMenu.setBackground(java.awt.Color.white);
+        SalesMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/sale.png"))); // NOI18N
+        SalesMenu.setText("SALES");
+        SalesMenu.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
 
         reportSummary.setFont(new java.awt.Font("Century Schoolbook L", 1, 16)); // NOI18N
         reportSummary.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/clipboard.png"))); // NOI18N
@@ -294,14 +294,14 @@ public class homeFrame extends javax.swing.JFrame {
                 reportSummaryActionPerformed(evt);
             }
         });
-        dueBills.add(reportSummary);
+        SalesMenu.add(reportSummary);
 
-        jMenuBar1.add(dueBills);
+        jMenuBar1.add(SalesMenu);
 
-        jMenu7.setBackground(java.awt.Color.white);
-        jMenu7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/logout.png"))); // NOI18N
-        jMenu7.setText("EXIT");
-        jMenu7.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
+        ExitMenu.setBackground(java.awt.Color.white);
+        ExitMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/logout.png"))); // NOI18N
+        ExitMenu.setText("EXIT");
+        ExitMenu.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
 
         LogOff.setFont(new java.awt.Font("Century Schoolbook L", 1, 16)); // NOI18N
         LogOff.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BillingIcon/log-out.png"))); // NOI18N
@@ -311,9 +311,9 @@ public class homeFrame extends javax.swing.JFrame {
                 LogOffActionPerformed(evt);
             }
         });
-        jMenu7.add(LogOff);
+        ExitMenu.add(LogOff);
 
-        jMenuBar1.add(jMenu7);
+        jMenuBar1.add(ExitMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -347,13 +347,13 @@ public class homeFrame extends javax.swing.JFrame {
        sip.txtProName.requestFocus();
     }//GEN-LAST:event_stockInActionPerformed
 
-    private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu1ActionPerformed
+    private void HomeMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HomeMenuActionPerformed
        
-    }//GEN-LAST:event_jMenu1ActionPerformed
+    }//GEN-LAST:event_HomeMenuActionPerformed
 
-    private void jMenu1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jMenu1FocusGained
+    private void HomeMenuFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_HomeMenuFocusGained
        
-    }//GEN-LAST:event_jMenu1FocusGained
+    }//GEN-LAST:event_HomeMenuFocusGained
 
     private void reportSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportSummaryActionPerformed
        state();
@@ -426,23 +426,23 @@ public class homeFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Billing;
+    private javax.swing.JMenu ExitMenu;
     private javax.swing.JMenuItem Home;
+    private javax.swing.JMenu HomeMenu;
+    private javax.swing.JMenu InvoiceMenu;
     private javax.swing.JMenuItem LogOff;
     private javax.swing.JMenuItem Quotation;
+    private javax.swing.JMenu SalesMenu;
+    private javax.swing.JMenu StockMenu;
     private javax.swing.JPanel displayPanel;
-    private javax.swing.JMenu dueBills;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblTodayDate;
     private javax.swing.JLabel lblUser;
     private javax.swing.JMenuItem reportSummary;
-    private javax.swing.JMenu stock;
     private javax.swing.JMenuItem stockIn;
     private javax.swing.JMenuItem stockManagement;
     // End of variables declaration//GEN-END:variables

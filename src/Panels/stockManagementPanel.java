@@ -23,7 +23,7 @@ public class stockManagementPanel extends javax.swing.JPanel {
     DataBase_Connection dao;
     protected Statement smtInstance;
     protected Connection conInstance;
-    DefaultTableModel model, model1;
+    DefaultTableModel stockTableModel;
 
     /**
      * Creates new form stockManagementPanel
@@ -46,16 +46,16 @@ public class stockManagementPanel extends javax.swing.JPanel {
     
     private void remove() {
 
-        int rowCount = model.getRowCount();
+        int rowCount = stockTableModel.getRowCount();
         //Remove rows one by one from the end of the table
         for (int i = rowCount - 1; i >= 0; i--) {
-            model.removeRow(i);
+            stockTableModel.removeRow(i);
         }
     }
     
     private void fillTable()
     {
-       model  =(DefaultTableModel)stockTable.getModel();
+       stockTableModel  =(DefaultTableModel)stockTable.getModel();
        String values = txtSearchName.getText();
         try {
             String  sql1= "SELECT * FROM product_stock where proName Like '%"+values+"%'";
@@ -73,12 +73,12 @@ public class stockManagementPanel extends javax.swing.JPanel {
                         rs1.beforeFirst();
                         
                         while (rs1.next()) {
-                    String A = rs1.getString("proCode");                  
-                    String B = rs1.getString("proName");
-                    String C = rs1.getString("quan");
-                    String D = rs1.getString("cost");
-                    String E = rs1.getString("mrp");
-                    model.insertRow(j,new Object[]{A,B,C,D,E});
+                    String proCode = rs1.getString("proCode");                  
+                    String proName = rs1.getString("proName");
+                    String qty = rs1.getString("quan");
+                    String cost = rs1.getString("cost");
+                    String mrp = rs1.getString("mrp");
+                    stockTableModel.insertRow(j,new Object[]{proCode,proName,qty,cost,mrp});
                  
                     j++;
                 }
@@ -525,12 +525,12 @@ public class stockManagementPanel extends javax.swing.JPanel {
 
     private void stockTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stockTableMouseClicked
        int index = stockTable.getSelectedRow();
-       model  =(DefaultTableModel)stockTable.getModel();
-       txtProCode.setText(model.getValueAt(index, 0).toString());
-       txtProName.setText(model.getValueAt(index, 1).toString());
-       txtQuan.setText(model.getValueAt(index, 2).toString());
-       txtcost.setText(model.getValueAt(index, 3).toString());
-       txtMRP.setText(model.getValueAt(index, 4).toString());
+       stockTableModel  =(DefaultTableModel)stockTable.getModel();
+       txtProCode.setText(stockTableModel.getValueAt(index, 0).toString());
+       txtProName.setText(stockTableModel.getValueAt(index, 1).toString());
+       txtQuan.setText(stockTableModel.getValueAt(index, 2).toString());
+       txtcost.setText(stockTableModel.getValueAt(index, 3).toString());
+       txtMRP.setText(stockTableModel.getValueAt(index, 4).toString());
        txtProName.requestFocus();
     }//GEN-LAST:event_stockTableMouseClicked
 

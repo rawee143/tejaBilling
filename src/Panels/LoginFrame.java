@@ -9,6 +9,7 @@ import Dao.DataBase_Connection;
 import PanelForms.Test.Encryption;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
@@ -387,29 +388,40 @@ public class LoginFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void Submit_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Submit_btnActionPerformed
-        if(txtUserName.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Enter Username",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-            txtUserName.requestFocus();
-        }
-        else{
-            login();
+        try {
+            if (txtUserName.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Enter Username",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                txtUserName.requestFocus();
+            } else {
+                login();
+            }
+        } catch (HeadlessException headlessException) {
         }
     }//GEN-LAST:event_Submit_btnActionPerformed
 
     private void forgotPasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgotPasswordMouseClicked
-        state();
-        fpp.setVisible(true);
+        try {
+            state();
+            fpp.setVisible(true);
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_forgotPasswordMouseClicked
 
     private void lblregMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblregMouseClicked
-        state();
-        rp.setVisible(true);
+        try {
+            state();
+            rp.setVisible(true);
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_lblregMouseClicked
 
     private void lblLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLoginMouseClicked
-        state();
-        logInPanel.setVisible(true);
+        try {
+            state();
+            logInPanel.setVisible(true);
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_lblLoginMouseClicked
 
     private void txtUserNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUserNameKeyPressed

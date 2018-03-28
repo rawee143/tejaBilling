@@ -23,7 +23,7 @@ public class homePanel extends javax.swing.JPanel {
     DataBase_Connection dao;
     protected Statement smtInstance;
     protected Connection conInstance;
-    DefaultTableModel model, model1;
+    DefaultTableModel stockTableModel;
     
 
     /**
@@ -40,10 +40,10 @@ public class homePanel extends javax.swing.JPanel {
     
     private void remove() {
 
-        int rowCount = model.getRowCount();
+        int rowCount = stockTableModel.getRowCount();
         //Remove rows one by one from the end of the table
         for (int i = rowCount - 1; i >= 0; i--) {
-            model.removeRow(i);
+            stockTableModel.removeRow(i);
         }
     }
     
@@ -53,7 +53,7 @@ public class homePanel extends javax.swing.JPanel {
     
     
     private void fillTable(){
-       model  =(DefaultTableModel)stockTable.getModel();
+       stockTableModel  =(DefaultTableModel)stockTable.getModel();
        String values = txtsearchName.getText();
         try {
             
@@ -72,11 +72,11 @@ public class homePanel extends javax.swing.JPanel {
                         
                         while (rs1.next()) {
                                       
-                    String A = rs1.getString("proCode");
-                    String B = rs1.getString("proName");
-                    String D = rs1.getString("quan");
-                    String F = rs1.getString("mrp");
-                    model.insertRow(j,new Object[]{A,B,D,F});
+                    String pro_code = rs1.getString("proCode");
+                    String pro_name = rs1.getString("proName");
+                    String qty = rs1.getString("quan");
+                    String mrp = rs1.getString("mrp");
+                    stockTableModel.insertRow(j,new Object[]{pro_code,pro_name,qty,mrp});
                  
                     j++;
                 }
@@ -283,7 +283,10 @@ public class homePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
         
     private void txtsearchNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsearchNameKeyReleased
-        fillTable();
+        try {
+            fillTable();
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_txtsearchNameKeyReleased
 
     private void stockTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stockTableMouseClicked
@@ -296,7 +299,10 @@ public class homePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_txtsearchNameFocusGained
 
     private void txtsearchNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsearchNameKeyPressed
-      ((AbstractDocument) txtsearchName.getDocument()).setDocumentFilter(new MyAlphaFilter());
+        try {
+            ((AbstractDocument) txtsearchName.getDocument()).setDocumentFilter(new MyAlphaFilter());
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_txtsearchNameKeyPressed
 
 

@@ -838,32 +838,41 @@ public class SalesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCostFocusGained
 
     private void txtCostKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCostKeyTyped
-        if ((!"".equals(txtReq.getText())) && (!"".equals(txtRate.getText()))) {
-              float cost = Float.parseFloat(txtReq.getText()) * Float.parseFloat(txtRate.getText());
+        try {
+            if ((!"".equals(txtReq.getText())) && (!"".equals(txtRate.getText()))) {
+                float cost = Float.parseFloat(txtReq.getText()) * Float.parseFloat(txtRate.getText());
                 txtCost.setText(new DecimalFormat("##.##").format(cost));
                 
             }
+        } catch (NumberFormatException numberFormatException) {
+        }
     }//GEN-LAST:event_txtCostKeyTyped
 
     private void searchTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchTableMouseClicked
-        int index = searchTable.getSelectedRow();
-        TableModel model2 = searchTable.getModel();
-        String Proname = model2.getValueAt(index, 1).toString();
-        String ratePrice = model2.getValueAt(index, 3).toString();
-        proCode = model2.getValueAt(index, 0).toString();
-        maxProductQuantity = Integer.parseInt(model2.getValueAt(index, 2).toString());
-        txtProName.setText(Proname);
-        txtRate.setText(ratePrice);
-        txtReq.requestFocus();
+        try {
+            int index = searchTable.getSelectedRow();
+            TableModel model2 = searchTable.getModel();
+            String Proname = model2.getValueAt(index, 1).toString();
+            String ratePrice = model2.getValueAt(index, 3).toString();
+            proCode = model2.getValueAt(index, 0).toString();
+            maxProductQuantity = Integer.parseInt(model2.getValueAt(index, 2).toString());
+            txtProName.setText(Proname);
+            txtRate.setText(ratePrice);
+            txtReq.requestFocus();
+        } catch (Exception ex) {
+        }
         
     }//GEN-LAST:event_searchTableMouseClicked
 
     private void billTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_billTableMouseClicked
-                int index = billTable.getSelectedRow();
-                DefaultTableModel del = (DefaultTableModel) billTable.getModel();
-                del.removeRow(index);
-                billTableIndex--;
-                calculate();
+   try {
+            int index = billTable.getSelectedRow();
+            DefaultTableModel del = (DefaultTableModel) billTable.getModel();
+            del.removeRow(index);
+            billTableIndex--;
+            calculate();
+        } catch (Exception e) {
+        }
           
     }//GEN-LAST:event_billTableMouseClicked
 
@@ -908,13 +917,15 @@ public class SalesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_txtReqKeyReleased
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        if(!isEmpty1(searchTable)&&(!"".equals(txtCost.getText()))){
-        addToTable();
-        resetProSelection();
-        txtProName.requestFocus();
-        }
-        else{
-            JOptionPane.showMessageDialog(null,"Nothing to Add");
+        try {
+            if (!isEmpty1(searchTable) && (!"".equals(txtCost.getText()))) {
+                addToTable();
+                resetProSelection();
+                txtProName.requestFocus();
+            } else {
+                JOptionPane.showMessageDialog(null, "Nothing to Add");
+            }
+        } catch (Exception exception) {
         }
         
         
