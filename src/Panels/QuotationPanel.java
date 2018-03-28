@@ -21,6 +21,15 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.AbstractDocument;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 
 /**
@@ -194,7 +203,7 @@ public class QuotationPanel extends javax.swing.JPanel {
 //        
     }
     
-    public void saveProductDetails(){
+    public void saveProductDetails() throws JRException{
         try{
             int rows=billTable.getRowCount();
             conInstance.setAutoCommit(false);
@@ -230,10 +239,32 @@ public class QuotationPanel extends javax.swing.JPanel {
             resetCustomerDetail();
             resetBill();
             billTableIndex = 0;
-            QuotationFrame lf = new QuotationFrame();
-                lf.setId(BillId);
-//                lf.fillDetails(qop);
-                lf.setVisible(true);
+            String sql= "SELECT\n" +
+          "     productBills.BillNo AS productBills_BillNo,\n" +
+          "     productBills.date AS productBills_date,\n" +
+          "     productBills.custName AS productBills_custName,\n" +
+          "     productBills.address AS productBills_address,\n" +
+          "     productBills.contact AS productBills_contact,\n" +
+          "     productBills.totalDue AS productBills_totalDue,\n" +
+          "     productBills.paid AS productBills_paid,\n" +
+          "     productBills.due AS productBills_due,\n" +
+          "     product_sales.id AS product_sales_id,\n" +
+          "     product_sales.BillNo AS product_sales_BillNo,\n" +
+          "     product_sales.proCode AS product_sales_proCode,\n" +
+          "     product_sales.proName AS product_sales_proName,\n" +
+          "     product_sales.qty AS product_sales_qty,\n" +
+          "     product_sales.rate AS product_sales_rate,\n" +
+          "     product_sales.amount AS product_sales_amount\n" +
+          "FROM\n" +
+          "     productBills productBills,\n" +
+          "     product_sales product_sales WHERE productBills.BillNo= product_sales.BillNo and product_sales.BillNo ='"+BillId+"'";
+            JasperDesign jd = JRXmlLoader.load("report/billreport/bill.jrxml");
+            JRDesignQuery newQuery = new JRDesignQuery();
+            newQuery.setText(sql);
+            jd.setQuery(newQuery);
+            JasperReport jr = JasperCompileManager.compileReport(jd);
+            JasperPrint jp = JasperFillManager.fillReport(jr, null, conInstance);
+            JasperViewer.viewReport(jp,false);
             
         }   catch (SQLException ex) {
                 Logger.getLogger(SalesPanel.class.getName()).log(Level.SEVERE, null, ex);

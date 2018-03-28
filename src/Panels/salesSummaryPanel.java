@@ -10,6 +10,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,9 +23,22 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -35,8 +49,10 @@ public class salesSummaryPanel extends javax.swing.JPanel {
         protected Statement smtInstance,smtUsingDate;
         ResultSet rs,rs1, rsOpen,rsClose;
         protected String queryUsingSelection,queryOpen, queryClose;
+        protected String excelFilePath = null;
         DataBase_Connection dao;
         DefaultTableModel model, model1;
+        private JTextField filename = new JTextField(), dir = new JTextField();
        
 
     /**
@@ -44,11 +60,29 @@ public class salesSummaryPanel extends javax.swing.JPanel {
      */
     public salesSummaryPanel() {
         initComponents();
+        dir.setEditable(false);
+        filename.setEditable(false);
         dao = new DataBase_Connection();
         conInstance = dao.getConnection();
         ButtonGroup();
         dateFrom.setDate(Calendar.getInstance().getTime());
         dateTo.setDate(Calendar.getInstance().getTime());
+    }
+    
+    public void excelPerformed() {
+      JFileChooser c = new JFileChooser();
+      // Demonstrate "Save" dialog:
+      int rVal = c.showSaveDialog(salesSummaryPanel.this);
+      if (rVal == JFileChooser.APPROVE_OPTION) {
+        filename.setText(c.getSelectedFile().getName());
+        dir.setText(c.getCurrentDirectory().toString());
+        
+          excelFilePath = dir.getText()+"/"+filename.getText();
+      }
+      if (rVal == JFileChooser.CANCEL_OPTION) {
+        filename.setText("You pressed cancel");
+        dir.setText("");
+      }
     }
     
     private void ButtonGroup() {
@@ -90,15 +124,15 @@ public class salesSummaryPanel extends javax.swing.JPanel {
             java.sql.Date dTo = new java.sql.Date(dateTo.getDate().getTime());
             if(rbnMonthly.isSelected() ||rbnDate.isSelected()){
             if(rbnMonthly.isSelected()){
-            queryOpen ="Select sum(amount) from product_sales, productBills where product_sales.BillNo = productBills.BillNo and date <'" + dFrom + "'";
-            queryUsingSelection = "select * from product_sales, productBills where product_sales.BillNo = productBills.BillNo and (date between '"+dFrom+"' And '"+dTo+"')order by date";
-            queryClose ="Select sum(amount) from product_sales, productBills where product_sales.BillNo = productBills.BillNo and (date between '"+dFrom+"' And '"+dTo+"')";
+            queryOpen ="Select sum(totalDue) from productBills where date <'" + dFrom + "'";
+            queryUsingSelection = "select * from productBills where (date between '"+dFrom+"' And '"+dTo+"')order by date";
+            queryClose ="Select sum(totalDue) from productBills where (date between '"+dFrom+"' And '"+dTo+"')";
             
         }
             else if(rbnDate.isSelected()){
-            queryOpen ="Select sum(product_sales.amount) from product_sales, productBills where product_sales.BillNo = productBills.BillNo and productBills.date <'" + dFrom + "'";
-            queryUsingSelection = "select * from product_sales, productBills where product_sales.BillNo = productBills.BillNo and date ='" + dFrom + "' order by date";
-            queryClose ="Select sum(amount) from product_sales, productBills where product_sales.BillNo = productBills.BillNo and date ='" + dFrom + "'";
+            queryOpen ="Select sum(totalDue) from productBills where date <'" + dFrom + "'";
+            queryUsingSelection = "select * from productBills where date ='" + dFrom + "' order by date";
+            queryClose ="Select sum(totalDue) from productBills where date ='" + dFrom + "'";
             
         }
             smtInstance = conInstance.createStatement();
@@ -114,8 +148,8 @@ public class salesSummaryPanel extends javax.swing.JPanel {
             }
             else{
             //queryOpen ="Select sum(product_sales.amount) from product_sales, productBills where product_sales.BillNo = productBills.BillNo and productBills.date <'" + dFrom + "'";
-            queryUsingSelection = "select * from product_sales, productBills where product_sales.BillNo = productBills.BillNo order by date";
-            queryClose ="Select sum(amount) from product_sales";
+            queryUsingSelection = "select * from productBills order by date";
+            queryClose ="Select sum(totalDue) from productBills";
             txtOpen.setText("0.0");    
         }
             
@@ -146,14 +180,14 @@ public class salesSummaryPanel extends javax.swing.JPanel {
                     remove();
                     while (rs1.next()) 
                     {
-                        Date dbDate = rs1.getDate("productBills.date");
+                        Date dbDate = rs1.getDate("date");
                         DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
                         String todayDate =dateformat.format(dbDate);
-                        String billId = rs1.getString("productBills.BillNo");
-                        String NAME = rs1.getString("product_sales.proName");
-                        String qty = rs1.getString("product_sales.qty");
-                        String rate = rs1.getString("product_sales.rate");
-                        Double amt = (Double.parseDouble(rate) * Double.parseDouble(qty));
+                        String billId = rs1.getString("BillNo");
+                        String NAME = rs1.getString("custName");
+                        String total = rs1.getString("totalDue");
+                        //String rate = rs1.getString("product_sales.rate");
+                        Double amt = (Double.parseDouble(total));
                         String amount = Double.toString(amt);
 
                         model.insertRow(j,new Object[]{todayDate,billId,NAME,amount});
@@ -161,7 +195,7 @@ public class salesSummaryPanel extends javax.swing.JPanel {
                     }
                 }
               } catch (SQLException ex) {
-             Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(salesSummaryPanel.class.getName()).log(Level.SEVERE, null, ex);
          }
         finally
         {
@@ -225,7 +259,7 @@ public class salesSummaryPanel extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Date", "Invoice", "Product Name", "Amount"
+                "Date", "Invoice", "Customer Name", "Amount"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -400,7 +434,42 @@ public class salesSummaryPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void salesTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_salesTableMouseClicked
-        
+            try {
+                int index = salesTable.getSelectedRow();
+                model  =(DefaultTableModel)salesTable.getModel();
+                String billId = model.getValueAt(index, 1).toString();
+                
+                String sql= "SELECT\n" +
+                        "     productBills.BillNo AS productBills_BillNo,\n" +
+                        "     productBills.date AS productBills_date,\n" +
+                        "     productBills.custName AS productBills_custName,\n" +
+                        "     productBills.address AS productBills_address,\n" +
+                        "     productBills.contact AS productBills_contact,\n" +
+                        "     productBills.totalDue AS productBills_totalDue,\n" +
+                        "     productBills.paid AS productBills_paid,\n" +
+                        "     productBills.due AS productBills_due,\n" +
+                        "     product_sales.id AS product_sales_id,\n" +
+                        "     product_sales.BillNo AS product_sales_BillNo,\n" +
+                        "     product_sales.proCode AS product_sales_proCode,\n" +
+                        "     product_sales.proName AS product_sales_proName,\n" +
+                        "     product_sales.qty AS product_sales_qty,\n" +
+                        "     product_sales.rate AS product_sales_rate,\n" +
+                        "     product_sales.amount AS product_sales_amount\n" +
+                        "FROM\n" +
+                        "     productBills productBills,\n" +
+                        "     product_sales product_sales WHERE productBills.BillNo= product_sales.BillNo and product_sales.BillNo ='"+billId+"'";
+                InputStream url7 = getClass().getResourceAsStream("/report/billreport/bill.jrxml");
+                JasperDesign jd = JRXmlLoader.load(url7);
+                JRDesignQuery newQuery = new JRDesignQuery();
+                newQuery.setText(sql);
+                jd.setQuery(newQuery);
+                JasperReport jr = JasperCompileManager.compileReport(jd);
+                JasperPrint jp = JasperFillManager.fillReport(jr, null, conInstance);
+                JasperViewer.viewReport(jp,false);
+                JasperExportManager.exportReportToPdfFile(jp,"sample_report.pdf");
+            } catch (JRException ex) {
+                Logger.getLogger(salesSummaryPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
     }//GEN-LAST:event_salesTableMouseClicked
 
     private void rbnMonthlyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbnMonthlyActionPerformed
@@ -408,20 +477,25 @@ public class salesSummaryPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_rbnMonthlyActionPerformed
 
     private void ExportToExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportToExcelActionPerformed
-        try {
-            exportTable(salesTable, new File("report/tabledata.xls"));
-            String file = "report/tabledata.xls";
-            File pdfFile = new File(file);
-            if (pdfFile.exists()) {
+        excelPerformed();
 
+        if (excelFilePath != null){
+        try {
+            exportTable(salesTable, new File(excelFilePath));
+            String file = "src/report/tabledata.xls";
+            File pdfFile = new File(excelFilePath);
+            if (pdfFile.exists()) {
                 if (Desktop.isDesktopSupported()) {
                     Desktop.getDesktop().open(pdfFile);
                 } else {
+                    JOptionPane.showMessageDialog(this, "Awt Desktop is not supported!");
                     System.out.println("Awt Desktop is not supported!");
                 }
+            } else {
             }
         } catch (IOException ex) {
             Logger.getLogger(salesSummaryPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
         }
     }//GEN-LAST:event_ExportToExcelActionPerformed
 public void exportTable(JTable table, File file) throws IOException {

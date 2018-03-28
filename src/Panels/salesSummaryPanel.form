@@ -175,7 +175,7 @@
                   <Table columnCount="4" rowCount="0">
                     <Column editable="false" title="Date" type="java.lang.Object"/>
                     <Column editable="false" title="Invoice" type="java.lang.Object"/>
-                    <Column editable="false" title="Product Name" type="java.lang.Object"/>
+                    <Column editable="false" title="Customer Name" type="java.lang.Object"/>
                     <Column editable="false" title="Amount" type="java.lang.Object"/>
                   </Table>
                 </Property>

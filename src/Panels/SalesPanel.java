@@ -8,6 +8,7 @@ package Panels;
 import Dao.DataBase_Connection;
 import PanelForms.Test.MyIntFilter;
 import java.awt.event.KeyEvent;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,8 +46,9 @@ public class SalesPanel extends javax.swing.JPanel {
     protected Statement smtInstance;
     ResultSet rs,rs1, rs2;
     protected String proCode,BillId;
+    protected int maxProductQuantity;
     DataBase_Connection dao;
-    DefaultTableModel model, model1;
+    DefaultTableModel searchTableModel, billTableModel;
     private int billTableIndex=0;
     
 
@@ -63,10 +65,10 @@ public class SalesPanel extends javax.swing.JPanel {
     private void remove(){
         
         if(!isEmpty1(searchTable)){
-            int rowCount = model.getRowCount();
+            int rowCount = searchTableModel.getRowCount();
     //Remove rows one by one from the end of the table
     for (int i = rowCount - 1; i >= 0; i--) {
-    model.removeRow(i);
+    searchTableModel.removeRow(i);
         }
         }
      }
@@ -74,10 +76,10 @@ public class SalesPanel extends javax.swing.JPanel {
     private void removeBill(){
         
         if(!isEmpty1(billTable)){
-            int rowCount = model1.getRowCount();
+            int rowCount = billTableModel.getRowCount();
     //Remove rows one by one from the end of the table
     for (int i = rowCount - 1; i >= 0; i--) {
-    model1.removeRow(i);
+    billTableModel.removeRow(i);
         }
         }
     }
@@ -107,7 +109,7 @@ public class SalesPanel extends javax.swing.JPanel {
      
      
     private void fillSearchTable(){
-        model= (DefaultTableModel)searchTable.getModel();
+        searchTableModel= (DefaultTableModel)searchTable.getModel();
         try{
             
             String queryUsingSelection = "select * from product_stock where proName Like '%" + txtProName.getText() + "%' AND quan > 0 order by proCode";
@@ -133,7 +135,7 @@ public class SalesPanel extends javax.swing.JPanel {
                         String proName = rs1.getString("proName");
                         String qty = rs1.getString("quan");
                         String cost = rs1.getString("cost");
-                        model.insertRow(j,new Object[]{proCode,proName,qty,cost});
+                        searchTableModel.insertRow(j,new Object[]{proCode,proName,qty,cost});
                         j++;
                     }
                     }
@@ -187,15 +189,18 @@ public class SalesPanel extends javax.swing.JPanel {
         String rate = txtRate.getText();
         String cost = txtCost.getText();
         //billTableIndex = 0;
+        if(Integer.parseInt(quan)<maxProductQuantity){
+        billTableModel = (DefaultTableModel) billTable.getModel();
         
-        model1 = (DefaultTableModel) billTable.getModel();
-        
-        model1.insertRow(billTableIndex, new Object[]{proCode,Product, quan, rate, cost});
+        billTableModel.insertRow(billTableIndex, new Object[]{proCode,Product, quan, rate, cost});
             billTableIndex++;
          resetProSelection();
         JOptionPane.showMessageDialog(null, "Item Entered");
         calculate();
-        
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Out of Stock");
+        }
     }
     
     private void savebillDetails(){
@@ -290,7 +295,8 @@ public class SalesPanel extends javax.swing.JPanel {
 "FROM\n" +
 "     productBills productBills,\n" +
 "     product_sales product_sales WHERE productBills.BillNo= product_sales.BillNo and product_sales.BillNo ='"+BillId+"'";
-            JasperDesign jd = JRXmlLoader.load("report/billreport/bill.jrxml");
+            InputStream url7 = getClass().getResourceAsStream("/report/billreport/bill.jrxml");
+            JasperDesign jd = JRXmlLoader.load(url7);
             JRDesignQuery newQuery = new JRDesignQuery();
             newQuery.setText(sql);
             jd.setQuery(newQuery);
@@ -845,6 +851,7 @@ public class SalesPanel extends javax.swing.JPanel {
         String Proname = model2.getValueAt(index, 1).toString();
         String ratePrice = model2.getValueAt(index, 3).toString();
         proCode = model2.getValueAt(index, 0).toString();
+        maxProductQuantity = Integer.parseInt(model2.getValueAt(index, 2).toString());
         txtProName.setText(Proname);
         txtRate.setText(ratePrice);
         txtReq.requestFocus();
