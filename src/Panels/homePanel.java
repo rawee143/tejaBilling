@@ -206,16 +206,22 @@ public class homePanel extends javax.swing.JPanel {
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lblNotification, txtsearchName});
 
-        jPanel4.setBackground(java.awt.Color.lightGray);
-        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel4.setBackground(new java.awt.Color(254, 58, 79));
+        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder(0));
 
+        jLabel4.setBackground(new java.awt.Color(254, 58, 79));
         jLabel4.setFont(new java.awt.Font("Century Schoolbook L", 1, 36)); // NOI18N
+        jLabel4.setForeground(java.awt.Color.white);
         jLabel4.setText("SRI VIJAYA TEJA COMMUNICATIONS");
 
+        jLabel6.setBackground(new java.awt.Color(254, 58, 79));
         jLabel6.setFont(new java.awt.Font("Century Schoolbook L", 1, 24)); // NOI18N
+        jLabel6.setForeground(java.awt.Color.white);
         jLabel6.setText("SALES & SERVICE");
 
+        jLabel8.setBackground(new java.awt.Color(254, 58, 79));
         jLabel8.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
+        jLabel8.setForeground(java.awt.Color.white);
         jLabel8.setText("D.Raviteja                                                                  Cell : 9292359795");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);

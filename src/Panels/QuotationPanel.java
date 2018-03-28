@@ -8,12 +8,16 @@ package Panels;
 import Dao.DataBase_Connection;
 import PanelForms.Test.MyIntFilter;
 import java.awt.event.KeyEvent;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -30,6 +34,7 @@ import net.sf.jasperreports.engine.design.JRDesignQuery;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
+import pojos.quotation_pojo;
 
 
 /**
@@ -40,11 +45,12 @@ public class QuotationPanel extends javax.swing.JPanel {
     
     protected Connection conInstance;
     protected Statement smtInstance;
-    ResultSet rs,rs1, rs2;
-    protected String proCode,BillId;
+    ResultSet rs,resultSetUsingSelection, rs2;
+    protected String proCode,QuotationId;
     DataBase_Connection dao;
-    DefaultTableModel model, model1;
+    DefaultTableModel searchTableModel, billTableModel;
     private int billTableIndex = 0;
+    quotation_pojo qop;
   
 
     /**
@@ -53,6 +59,7 @@ public class QuotationPanel extends javax.swing.JPanel {
     public QuotationPanel() {
         initComponents();
         dao = new DataBase_Connection();
+        qop = new quotation_pojo();
         conInstance = dao.getConnection();
         txtCustName.requestFocus();
     }
@@ -60,10 +67,10 @@ public class QuotationPanel extends javax.swing.JPanel {
     private void remove(){
         
         if(!isEmpty1(searchTable)){
-            int rowCount = model.getRowCount();
+            int rowCount = searchTableModel.getRowCount();
     //Remove rows one by one from the end of the table
     for (int i = rowCount - 1; i >= 0; i--) {
-    model.removeRow(i);
+    searchTableModel.removeRow(i);
         }
         }
      }
@@ -71,10 +78,10 @@ public class QuotationPanel extends javax.swing.JPanel {
     private void removeBill(){
         
         if(!isEmpty1(billTable)){
-            int rowCount = model1.getRowCount();
+            int rowCount = billTableModel.getRowCount();
     //Remove rows one by one from the end of the table
     for (int i = rowCount - 1; i >= 0; i--) {
-    model1.removeRow(i);
+    billTableModel.removeRow(i);
         }
         }
     }
@@ -101,33 +108,33 @@ public class QuotationPanel extends javax.swing.JPanel {
      
      
     private void fillSearchTable(){
-        model= (DefaultTableModel)searchTable.getModel();
+        searchTableModel= (DefaultTableModel)searchTable.getModel();
         try{
             
             String queryUsingSelection = "select * from product_stock where proName Like '%" + txtProName.getText() + "%' AND quan > 0  order by proCode";
             
             smtInstance = conInstance.createStatement();
-            rs1 = smtInstance.executeQuery(queryUsingSelection);
-            if (rs1 != null)
+            resultSetUsingSelection = smtInstance.executeQuery(queryUsingSelection);
+            if (resultSetUsingSelection != null)
                 {
                     int i = 0;
-                    while ( rs1.next() ) //step through the result set
+                    while ( resultSetUsingSelection.next() ) //step through the result set
                     {
                         i++;//count raws
                     }
                     if(i>0){
                     int j = 0;
-                    rs1.beforeFirst();
+                    resultSetUsingSelection.beforeFirst();
                     remove();
-                    while (rs1.next()) 
+                    while (resultSetUsingSelection.next()) 
                     {
                     
                     
-                        proCode= rs1.getString("proCode");
-                        String proName = rs1.getString("proName");
-                        String qty = rs1.getString("quan");
-                        String cost = rs1.getString("cost");
-                        model.insertRow(j,new Object[]{proCode,proName,qty,cost});
+                        proCode= resultSetUsingSelection.getString("proCode");
+                        String proName = resultSetUsingSelection.getString("proName");
+                        String qty = resultSetUsingSelection.getString("quan");
+                        String cost = resultSetUsingSelection.getString("cost");
+                        searchTableModel.insertRow(j,new Object[]{proCode,proName,qty,cost});
                         j++;
                     }
                     }
@@ -181,10 +188,10 @@ public class QuotationPanel extends javax.swing.JPanel {
         String rate = txtRate.getText();
         String cost = txtCost.getText();
         
-        model1 = (DefaultTableModel) billTable.getModel();
+        billTableModel = (DefaultTableModel) billTable.getModel();
         
         
-            model1.insertRow(billTableIndex, new Object[]{proCode,Product, quan, rate, cost});
+            billTableModel.insertRow(billTableIndex, new Object[]{proCode,Product, quan, rate, cost});
             billTableIndex++;
          resetProSelection();
         JOptionPane.showMessageDialog(null, "Item Entered");
@@ -193,22 +200,39 @@ public class QuotationPanel extends javax.swing.JPanel {
     }
     
     private void saveQuotation(){
-        
-//            qop.setName(txtCustName.getText());
-//            qop.setAddress(txtAddress.getText());
-//            qop.setContact(txtContact.getText());
-//            qop.setTotal(lblSubTotal.getText());
-//           
-//            saveProductDetails();
-//        
+
+    try {
+            DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar cal = Calendar.getInstance();
+            String todayDate =dateformat.format(cal.getTime());
+            String enterBills = "INSERT INTO quotation_tbl(date, custName, address, contact,subTotal) VALUES ('"+todayDate+"','"+txtCustName.getText()+"','"+txtAddress.getText()+"','"+txtContact.getText()+"','"+lblSubTotal.getText()+"')";
+            smtInstance = conInstance.createStatement();
+            int result = smtInstance.executeUpdate(enterBills);
+            if(result!=0){
+                saveProductDetails();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SalesPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JRException ex) {
+            Logger.getLogger(SalesPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
     }
+      
     
     public void saveProductDetails() throws JRException{
         try{
+            String maxId = "Select max(quotationNo) from quotation_tbl";
+            smtInstance = conInstance.createStatement();
+            ResultSet max = smtInstance.executeQuery(maxId);
+            while(max.next()){
+                QuotationId = max.getString(1);
+            }
+            
             int rows=billTable.getRowCount();
             conInstance.setAutoCommit(false);
             
-            String queryco = "insert into quotation_tbl (BillNo,proCode,proName,qty,rate,amount) values (?,?,?,?,?,?)";
+            String queryco = "insert into quotation_detail(quotationNo,proCode,proName,qty,rate,amount) values (?,?,?,?,?,?)";
             PreparedStatement pst = conInstance.prepareStatement(queryco);
                 for(int row = 0; row<rows; row++){
                     proCode = (String)billTable.getValueAt(row, 0);
@@ -218,7 +242,7 @@ public class QuotationPanel extends javax.swing.JPanel {
                     String cost = (String)billTable.getValueAt(row,4);
             
             
-                pst.setString(1, BillId);
+                pst.setString(1, QuotationId);
                 pst.setString(2, proCode);
                 pst.setString(3, proName);
                 pst.setString(4, quan);
@@ -229,36 +253,29 @@ public class QuotationPanel extends javax.swing.JPanel {
                 }
             pst.executeBatch();
             conInstance.commit();
-            String maxId = "Select max(BillNo) from quotation_tbl";
-            smtInstance = conInstance.createStatement();
-            ResultSet max = smtInstance.executeQuery(maxId);
-            while(max.next()){
-                BillId = max.getString(1);
-            }
+            
             
             resetCustomerDetail();
             resetBill();
             billTableIndex = 0;
             String sql= "SELECT\n" +
-          "     productBills.BillNo AS productBills_BillNo,\n" +
-          "     productBills.date AS productBills_date,\n" +
-          "     productBills.custName AS productBills_custName,\n" +
-          "     productBills.address AS productBills_address,\n" +
-          "     productBills.contact AS productBills_contact,\n" +
-          "     productBills.totalDue AS productBills_totalDue,\n" +
-          "     productBills.paid AS productBills_paid,\n" +
-          "     productBills.due AS productBills_due,\n" +
-          "     product_sales.id AS product_sales_id,\n" +
-          "     product_sales.BillNo AS product_sales_BillNo,\n" +
-          "     product_sales.proCode AS product_sales_proCode,\n" +
-          "     product_sales.proName AS product_sales_proName,\n" +
-          "     product_sales.qty AS product_sales_qty,\n" +
-          "     product_sales.rate AS product_sales_rate,\n" +
-          "     product_sales.amount AS product_sales_amount\n" +
-          "FROM\n" +
-          "     productBills productBills,\n" +
-          "     product_sales product_sales WHERE productBills.BillNo= product_sales.BillNo and product_sales.BillNo ='"+BillId+"'";
-            JasperDesign jd = JRXmlLoader.load("report/billreport/bill.jrxml");
+            "     quotation_tbl.quotationNo AS qt_quotationNo,\n" +
+            "     quotation_tbl.date AS qt_date,\n" +
+            "     quotation_tbl.custName AS qt_custName,\n" +
+            "     quotation_tbl.address AS qt_address,\n" +
+            "     quotation_tbl.contact AS qt_contact,\n" +
+            "     quotation_detail.quotationNo AS qd_quotationNo,\n" +
+            "     quotation_detail.proCode AS qd_proCode,\n" +
+            "     quotation_detail.proName AS qd_proName,\n" +
+            "     quotation_detail.qty AS qd_qty,\n" +
+            "     quotation_detail.rate AS qd_rate,\n" +
+            "     quotation_detail.amount AS qd_amount\n" +
+            "FROM\n" +
+            "     quotation_tbl quotation_tbl,\n" +
+            "     quotation_detail quotation_detail WHERE quotation_tbl.quotationNo = quotation_detail.quotationNo and quotation_tbl.quotationNo ='"+QuotationId+"'";
+            
+            InputStream url7 = getClass().getResourceAsStream("/report/quotationReport/quotation.jrxml");
+            JasperDesign jd = JRXmlLoader.load(url7);
             JRDesignQuery newQuery = new JRDesignQuery();
             newQuery.setText(sql);
             jd.setQuery(newQuery);
@@ -331,7 +348,7 @@ public class QuotationPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(java.awt.Color.lightGray);
@@ -686,7 +703,7 @@ public class QuotationPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
