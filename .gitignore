@@ -4,3 +4,4 @@ report/
 build.xml
 out.pdf
 pom.xml
+src/Panels/*.form

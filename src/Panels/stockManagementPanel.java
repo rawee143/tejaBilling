@@ -166,9 +166,12 @@ public class stockManagementPanel extends javax.swing.JPanel {
         setBackground(java.awt.Color.gray);
         setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
-        jPanel1.setBackground(java.awt.Color.lightGray);
+        jPanel1.setBackground(new java.awt.Color(254, 58, 79));
+        jPanel1.setForeground(java.awt.Color.white);
 
+        jLabel1.setBackground(new java.awt.Color(254, 58, 79));
         jLabel1.setFont(new java.awt.Font("Century Schoolbook L", 1, 24)); // NOI18N
+        jLabel1.setForeground(java.awt.Color.white);
         jLabel1.setText("Stock Management Panel");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

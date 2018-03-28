@@ -377,10 +377,13 @@ public class stockInPanel extends javax.swing.JPanel {
                 .addGap(30, 30, 30))
         );
 
-        jPanel2.setBackground(java.awt.Color.lightGray);
+        jPanel2.setBackground(new java.awt.Color(254, 58, 79));
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel2.setForeground(java.awt.Color.white);
 
+        jLabel18.setBackground(new java.awt.Color(254, 58, 79));
         jLabel18.setFont(new java.awt.Font("Century Schoolbook L", 1, 24)); // NOI18N
+        jLabel18.setForeground(java.awt.Color.white);
         jLabel18.setText("In-Stock Entry");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -417,7 +420,7 @@ public class stockInPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 516, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

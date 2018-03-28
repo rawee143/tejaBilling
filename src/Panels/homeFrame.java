@@ -30,7 +30,7 @@ public class homeFrame extends javax.swing.JFrame {
     stockManagementPanel stockMgmnt;
     GridBagConstraints gbr;
     QuotationPanel qf;
-    public String globalVariableCashier;
+    private String globalVariableCashier;
     BufferedImage bi;
     
 
@@ -155,17 +155,21 @@ public class homeFrame extends javax.swing.JFrame {
             .addGap(0, 594, Short.MAX_VALUE)
         );
 
-        jPanel1.setBackground(java.awt.Color.white);
+        jPanel1.setBackground(new java.awt.Color(254, 58, 79));
 
         jLabel9.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
+        jLabel9.setForeground(java.awt.Color.white);
         jLabel9.setText("Date:");
 
         lblTodayDate.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
+        lblTodayDate.setForeground(java.awt.Color.white);
 
         jLabel11.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
+        jLabel11.setForeground(java.awt.Color.white);
         jLabel11.setText("Welcome:");
 
         lblUser.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
+        lblUser.setForeground(java.awt.Color.white);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -337,6 +341,8 @@ public class homeFrame extends javax.swing.JFrame {
 
     private void BillingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BillingActionPerformed
         state();
+        
+       salesPanel.setGlobalVariableCashier(getGlobalVariableCashier());
        salesPanel.setVisible(true);
        salesPanel.txtCustName.requestFocus();
     }//GEN-LAST:event_BillingActionPerformed

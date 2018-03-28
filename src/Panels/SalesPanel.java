@@ -48,6 +48,16 @@ public class SalesPanel extends javax.swing.JPanel {
     protected String proCode,BillId;
     protected int maxProductQuantity;
     DataBase_Connection dao;
+    private String globalVariableCashier;
+
+    public String getGlobalVariableCashier() {
+        return globalVariableCashier;
+    }
+
+    public void setGlobalVariableCashier(String globalVariableCashier) {
+        this.globalVariableCashier = globalVariableCashier;
+        
+    }
     DefaultTableModel searchTableModel, billTableModel;
     private int billTableIndex=0;
     
@@ -60,6 +70,7 @@ public class SalesPanel extends javax.swing.JPanel {
         dao = new DataBase_Connection();
         conInstance = dao.getConnection();
         txtCustName.requestFocus();
+        
     }
 
     private void remove(){
@@ -208,8 +219,14 @@ public class SalesPanel extends javax.swing.JPanel {
             DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
             Calendar cal = Calendar.getInstance();
             String todayDate =dateformat.format(cal.getTime());
+            double payment;
+            if(Double.parseDouble(lblSubTotal.getText())>Double.parseDouble(txtPaid.getText())){
+                payment = Double.parseDouble(txtPaid.getText());
+            }else {
+                payment = Double.parseDouble(lblSubTotal.getText());
+            }
             
-            String enterBills = "INSERT INTO productBills(date,custName, address, contact, totalDue, paid, due) VALUES ('"+todayDate+"','"+txtCustName.getText()+"','"+txtAddress.getText()+"','"+txtContact.getText()+"',"+lblSubTotal.getText()+","+txtPaid.getText()+","+lblDue.getText()+")";
+            String enterBills = "INSERT INTO productBills(date,custName, address, contact, totalDue, paid, due,cashier_name) VALUES ('"+todayDate+"','"+txtCustName.getText()+"','"+txtAddress.getText()+"','"+txtContact.getText()+"',"+lblSubTotal.getText()+","+payment+","+lblDue.getText()+",'"+getGlobalVariableCashier()+"')";
             smtInstance = conInstance.createStatement();
             int result = smtInstance.executeUpdate(enterBills);
             if(result!=0){
@@ -230,6 +247,7 @@ public class SalesPanel extends javax.swing.JPanel {
             while(max.next()){
                 BillId = max.getString(1);
             }
+            
             int rows=billTable.getRowCount();
             conInstance.setAutoCommit(false);
             
@@ -277,25 +295,26 @@ public class SalesPanel extends javax.swing.JPanel {
             resetBill();
             billTableIndex = 0;
             String sql= "SELECT\n" +
-"     productBills.BillNo AS productBills_BillNo,\n" +
-"     productBills.date AS productBills_date,\n" +
-"     productBills.custName AS productBills_custName,\n" +
-"     productBills.address AS productBills_address,\n" +
-"     productBills.contact AS productBills_contact,\n" +
-"     productBills.totalDue AS productBills_totalDue,\n" +
-"     productBills.paid AS productBills_paid,\n" +
-"     productBills.due AS productBills_due,\n" +
-"     product_sales.id AS product_sales_id,\n" +
-"     product_sales.BillNo AS product_sales_BillNo,\n" +
-"     product_sales.proCode AS product_sales_proCode,\n" +
-"     product_sales.proName AS product_sales_proName,\n" +
-"     product_sales.qty AS product_sales_qty,\n" +
-"     product_sales.rate AS product_sales_rate,\n" +
-"     product_sales.amount AS product_sales_amount\n" +
-"FROM\n" +
-"     productBills productBills,\n" +
-"     product_sales product_sales WHERE productBills.BillNo= product_sales.BillNo and product_sales.BillNo ='"+BillId+"'";
+            "     productBills.BillNo AS productBills_BillNo,\n" +
+            "     productBills.date AS productBills_date,\n" +
+            "     productBills.custName AS productBills_custName,\n" +
+            "     productBills.address AS productBills_address,\n" +
+            "     productBills.contact AS productBills_contact,\n" +
+            "     productBills.totalDue AS productBills_totalDue,\n" +
+            "     productBills.paid AS productBills_paid,\n" +
+            "     productBills.due AS productBills_due,\n" +
+            "     product_sales.id AS product_sales_id,\n" +
+            "     product_sales.BillNo AS product_sales_BillNo,\n" +
+            "     product_sales.proCode AS product_sales_proCode,\n" +
+            "     product_sales.proName AS product_sales_proName,\n" +
+            "     product_sales.qty AS product_sales_qty,\n" +
+            "     product_sales.rate AS product_sales_rate,\n" +
+            "     product_sales.amount AS product_sales_amount\n" +
+            "FROM\n" +
+            "     productBills productBills,\n" +
+            "     product_sales product_sales WHERE productBills.BillNo = product_sales.BillNo and product_sales.BillNo = '"+BillId+"'";
             InputStream url7 = getClass().getResourceAsStream("/report/billreport/bill.jrxml");
+            
             JasperDesign jd = JRXmlLoader.load(url7);
             JRDesignQuery newQuery = new JRDesignQuery();
             newQuery.setText(sql);
@@ -358,10 +377,11 @@ public class SalesPanel extends javax.swing.JPanel {
 
         setBackground(java.awt.Color.gray);
 
-        jPanel1.setBackground(java.awt.Color.lightGray);
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel1.setBackground(new java.awt.Color(254, 58, 79));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder(0));
 
         jLabel2.setFont(new java.awt.Font("Century Schoolbook L", 1, 24)); // NOI18N
+        jLabel2.setForeground(java.awt.Color.white);
         jLabel2.setText("Billing");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -378,7 +398,7 @@ public class SalesPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(java.awt.Color.lightGray);
@@ -808,7 +828,7 @@ public class SalesPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)

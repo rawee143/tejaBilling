@@ -6,7 +6,6 @@
 package Panels;
 
 import Dao.DataBase_Connection;
-import java.awt.Desktop;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,14 +23,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -48,9 +45,10 @@ public class salesSummaryPanel extends javax.swing.JPanel {
         protected Connection conInstance;
         protected Statement smtInstance,smtUsingDate;
         ResultSet rs,rs1, rsOpen,rsClose;
-        protected String queryUsingSelection,queryOpen, queryClose;
-        protected String excelFilePath = null;
+        protected String queryUsingSelection,queryOpen, queryClose,selectedTable,reportSql;
+        protected String excelFilePath = null,billId= null;
         DataBase_Connection dao;
+        InputStream url7;
         DefaultTableModel salesTableModel;
         private final JTextField filename = new JTextField(), dir = new JTextField();
        
@@ -67,6 +65,7 @@ public class salesSummaryPanel extends javax.swing.JPanel {
         ButtonGroup();
         dateFrom.setDate(Calendar.getInstance().getTime());
         dateTo.setDate(Calendar.getInstance().getTime());
+        jRadioButtonBill.setSelected(true);
     }
     
     public void excelPerformed() {
@@ -89,6 +88,9 @@ public class salesSummaryPanel extends javax.swing.JPanel {
         ButtonGroup sb = new ButtonGroup();
         sb.add(rbnDate);
         sb.add(rbnMonthly);
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(jRadioButtonBill);
+        bg.add(jRadioButtonQuotation);
         
     }
 
@@ -120,18 +122,24 @@ public class salesSummaryPanel extends javax.swing.JPanel {
          salesTableModel= (DefaultTableModel)salesTable.getModel();
         try
         {
+            
+            if(jRadioButtonBill.isSelected()){
+                selectedTable = "productBills";
+            }else{
+                selectedTable = "quotation_tbl";
+            }
             java.sql.Date dFrom = new java.sql.Date(dateFrom.getDate().getTime());
             java.sql.Date dTo = new java.sql.Date(dateTo.getDate().getTime());
             if(rbnMonthly.isSelected() ||rbnDate.isSelected()){
             if(rbnMonthly.isSelected()){
             queryOpen ="Select sum(totalDue) from productBills where date <'" + dFrom + "'";
-            queryUsingSelection = "select * from productBills where (date between '"+dFrom+"' And '"+dTo+"')order by date";
+            queryUsingSelection = "select * from "+selectedTable+" where (date between '"+dFrom+"' And '"+dTo+"')order by date";
             queryClose ="Select sum(totalDue) from productBills where (date between '"+dFrom+"' And '"+dTo+"')";
             
         }
             else if(rbnDate.isSelected()){
             queryOpen ="Select sum(totalDue) from productBills where date <'" + dFrom + "'";
-            queryUsingSelection = "select * from productBills where date ='" + dFrom + "' order by date";
+            queryUsingSelection = "select * from "+selectedTable+" where date ='" + dFrom + "' order by date";
             queryClose ="Select sum(totalDue) from productBills where date ='" + dFrom + "'";
             
         }
@@ -148,7 +156,7 @@ public class salesSummaryPanel extends javax.swing.JPanel {
             }
             else{
             //queryOpen ="Select sum(product_sales.amount) from product_sales, productBills where product_sales.BillNo = productBills.BillNo and productBills.date <'" + dFrom + "'";
-            queryUsingSelection = "select * from productBills order by date";
+            queryUsingSelection = "select * from "+selectedTable+" order by date";
             queryClose ="Select sum(totalDue) from productBills";
             txtOpen.setText("0.0");    
         }
@@ -165,6 +173,7 @@ public class salesSummaryPanel extends javax.swing.JPanel {
                     }
             
             smtUsingDate = conInstance.createStatement();
+            
             rs1 = smtUsingDate.executeQuery(queryUsingSelection);
             
             
@@ -180,12 +189,12 @@ public class salesSummaryPanel extends javax.swing.JPanel {
                     remove();
                     while (rs1.next()) 
                     {
-                        Date dbDate = rs1.getDate("date");
+                        Date dbDate = rs1.getDate(2);
                         DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
                         String todayDate =dateformat.format(dbDate);
-                        String billId = rs1.getString("BillNo");
-                        String NAME = rs1.getString("custName");
-                        String total = rs1.getString("totalDue");
+                        String billId = rs1.getString(1);
+                        String NAME = rs1.getString(3);
+                        String total = rs1.getString(6);
                         //String rate = rs1.getString("product_sales.rate");
                         Double amt = (Double.parseDouble(total));
                         String amount = Double.toString(amt);
@@ -230,6 +239,8 @@ public class salesSummaryPanel extends javax.swing.JPanel {
         dateTo = new com.toedter.calendar.JDateChooser();
         rbnMonthly = new javax.swing.JRadioButton();
         ExportToExcel = new javax.swing.JButton();
+        jRadioButtonBill = new javax.swing.JRadioButton();
+        jRadioButtonQuotation = new javax.swing.JRadioButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -313,6 +324,12 @@ public class salesSummaryPanel extends javax.swing.JPanel {
             }
         });
 
+        jRadioButtonBill.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        jRadioButtonBill.setText("Bill");
+
+        jRadioButtonQuotation.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        jRadioButtonQuotation.setText("Quotation");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -326,20 +343,25 @@ public class salesSummaryPanel extends javax.swing.JPanel {
                 .addComponent(ExportToExcel)
                 .addGap(59, 59, 59))
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(234, 234, 234)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(rbnDate, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(111, 111, 111)
-                                .addComponent(rbnMonthly, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(dateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(rbnDate, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(111, 111, 111)
+                                .addComponent(rbnMonthly, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButtonQuotation)
+                            .addComponent(jRadioButtonBill))
+                        .addGap(22, 22, 22))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel2)
@@ -354,15 +376,19 @@ public class salesSummaryPanel extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rbnDate)
-                    .addComponent(rbnMonthly))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(rbnDate)
+                        .addComponent(rbnMonthly))
+                    .addComponent(jRadioButtonBill, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(dateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnSearch))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnSearch)
+                        .addComponent(jRadioButtonQuotation)))
                 .addGap(17, 17, 17)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
@@ -377,9 +403,12 @@ public class salesSummaryPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.setBackground(java.awt.Color.lightGray);
+        jPanel1.setBackground(new java.awt.Color(254, 58, 79));
+        jPanel1.setForeground(java.awt.Color.white);
 
+        jLabel1.setBackground(new java.awt.Color(254, 58, 79));
         jLabel1.setFont(new java.awt.Font("Century Schoolbook L", 1, 24)); // NOI18N
+        jLabel1.setForeground(java.awt.Color.white);
         jLabel1.setText("Sales Summary");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -438,35 +467,57 @@ public class salesSummaryPanel extends javax.swing.JPanel {
                 int index = salesTable.getSelectedRow();
                 salesTableModel  =(DefaultTableModel)salesTable.getModel();
                 String billId = salesTableModel.getValueAt(index, 1).toString();
-                
-                String sql= "SELECT\n" +
-                        "     productBills.BillNo AS productBills_BillNo,\n" +
-                        "     productBills.date AS productBills_date,\n" +
-                        "     productBills.custName AS productBills_custName,\n" +
-                        "     productBills.address AS productBills_address,\n" +
-                        "     productBills.contact AS productBills_contact,\n" +
-                        "     productBills.totalDue AS productBills_totalDue,\n" +
-                        "     productBills.paid AS productBills_paid,\n" +
-                        "     productBills.due AS productBills_due,\n" +
-                        "     product_sales.id AS product_sales_id,\n" +
-                        "     product_sales.BillNo AS product_sales_BillNo,\n" +
-                        "     product_sales.proCode AS product_sales_proCode,\n" +
-                        "     product_sales.proName AS product_sales_proName,\n" +
-                        "     product_sales.qty AS product_sales_qty,\n" +
-                        "     product_sales.rate AS product_sales_rate,\n" +
-                        "     product_sales.amount AS product_sales_amount\n" +
-                        "FROM\n" +
-                        "     productBills productBills,\n" +
-                        "     product_sales product_sales WHERE productBills.BillNo= product_sales.BillNo and product_sales.BillNo ='"+billId+"'";
-                InputStream url7 = getClass().getResourceAsStream("/report/billreport/bill.jrxml");
+                    if(jRadioButtonBill.isSelected()){
+                        reportSql = "SELECT\n" +
+                                "     productBills.BillNo AS productBills_BillNo,\n" +
+                                "     productBills.date AS productBills_date,\n" +
+                                "     productBills.custName AS productBills_custName,\n" +
+                                "     productBills.address AS productBills_address,\n" +
+                                "     productBills.contact AS productBills_contact,\n" +
+                                "     productBills.totalDue AS productBills_totalDue,\n" +
+                                "     productBills.paid AS productBills_paid,\n" +
+                                "     productBills.due AS productBills_due,\n" +
+                                "     product_sales.id AS product_sales_id,\n" +
+                                "     product_sales.BillNo AS product_sales_BillNo,\n" +
+                                "     product_sales.proCode AS product_sales_proCode,\n" +
+                                "     product_sales.proName AS product_sales_proName,\n" +
+                                "     product_sales.qty AS product_sales_qty,\n" +
+                                "     product_sales.rate AS product_sales_rate,\n" +
+                                "     product_sales.amount AS product_sales_amount\n" +
+                                "FROM\n" +
+                                "     productBills productBills,\n" +
+                                "     product_sales product_sales WHERE productBills.BillNo= product_sales.BillNo and product_sales.BillNo ='"+billId+"'";
+                            url7 = getClass().getResourceAsStream("/report/billreport/bill.jrxml");
+                        }else{
+
+                                    reportSql = "SELECT\n" +
+                                 "     quotation_tbl.quotationNo AS qt_quotationNo,\n" +
+                                 "     quotation_tbl.date AS qt_date,\n" +
+                                 "     quotation_tbl.custName AS qt_custName,\n" +
+                                 "     quotation_tbl.address AS qt_address,\n" +
+                                 "     quotation_tbl.contact AS qt_contact,\n" +
+                                 "     quotation_detail.quotationNo AS qd_quotationNo,\n" +
+                                 "     quotation_detail.proCode AS qd_proCode,\n" +
+                                 "     quotation_detail.proName AS qd_proName,\n" +
+                                 "     quotation_detail.qty AS qd_qty,\n" +
+                                 "     quotation_detail.rate AS qd_rate,\n" +
+                                 "     quotation_detail.amount AS qd_amount\n" +
+                                 "FROM\n" +
+                                 "     quotation_tbl quotation_tbl,\n" +
+                                 "     quotation_detail quotation_detail WHERE quotation_tbl.quotationNo = quotation_detail.quotationNo and quotation_tbl.quotationNo ='"+billId+"'";
+                        url7 = getClass().getResourceAsStream("/report/quotationReport/quotation.jrxml");
+                        }
+
+
+
                 JasperDesign jd = JRXmlLoader.load(url7);
                 JRDesignQuery newQuery = new JRDesignQuery();
-                newQuery.setText(sql);
+                newQuery.setText(reportSql);
                 jd.setQuery(newQuery);
                 JasperReport jr = JasperCompileManager.compileReport(jd);
                 JasperPrint jp = JasperFillManager.fillReport(jr, null, conInstance);
                 JasperViewer.viewReport(jp,false);
-                JasperExportManager.exportReportToPdfFile(jp,"sample_report.pdf");
+                //JasperExportManager.exportReportToPdfFile(jp,"sample_report.pdf");
             } catch (JRException ex) {
                 Logger.getLogger(salesSummaryPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -482,18 +533,7 @@ public class salesSummaryPanel extends javax.swing.JPanel {
         if (excelFilePath != null){
         try {
             exportTable(salesTable, new File(excelFilePath));
-            String file = "src/report/tabledata.xls";
-            File pdfFile = new File(excelFilePath);
-            if (pdfFile.exists()) {
-                if (Desktop.isDesktopSupported()) {
-                    Desktop.getDesktop().open(pdfFile);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Awt Desktop is not supported!");
-                    System.out.println("Awt Desktop is not supported!");
-                }
-            } else {
-            }
-        } catch (IOException ex) {
+            } catch (IOException ex) {
             Logger.getLogger(salesSummaryPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
         }
@@ -529,6 +569,8 @@ public void exportTable(JTable table, File file) throws IOException {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JRadioButton jRadioButtonBill;
+    private javax.swing.JRadioButton jRadioButtonQuotation;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JRadioButton rbnDate;
     private javax.swing.JRadioButton rbnMonthly;
