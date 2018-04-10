@@ -56,11 +56,12 @@ public class LoginFrame extends javax.swing.JFrame {
         this.getRootPane().setDefaultButton(Submit_btn);
         this.setLocationRelativeTo(null);
         try {
-            bi = ImageIO.read(new File("src/BillingIcon/invoice.png").toURI().toURL());
+            bi = ImageIO.read(getClass().getResource("/BillingIcon/invoice.png"));
+            this.setIconImage(bi);
+             this.setTitle("E-Bill Book || Sri Vijaya Teja Communications");
         } catch (IOException ex) {
             Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.setIconImage(bi);
         txtUserName.requestFocus();
         introPanel.setLayout(layout);
         init();

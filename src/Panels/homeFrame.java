@@ -52,9 +52,10 @@ public class homeFrame extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         try {
-            bi = ImageIO.read(new File("src/BillingIcon/invoice.png").toURI().toURL());
+            
+            bi = ImageIO.read(getClass().getResource("/BillingIcon/invoice.png"));
             this.setIconImage(bi);
-            this.setTitle("E-Bill Book            Sri Vijaya Teja Communications");
+            this.setTitle("E-Bill Book || Sri Vijaya Teja Communications");
         } catch (IOException ex) {
             Logger.getLogger(homeFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
